@@ -26,6 +26,5 @@ COPY . .
 # Exponer el puerto
 EXPOSE 8000
 
-# Comando para iniciar la aplicación
-# NOTA: En producción real el orquestador (ej. docker-compose) ejecutará las migraciones antes.
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]
+# Comando para iniciar la aplicación corriendo primero las migraciones
+CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 core.wsgi:application"]
