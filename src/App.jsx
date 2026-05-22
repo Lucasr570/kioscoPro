@@ -14,8 +14,35 @@ const App = () => {
   const [activeTab, setActiveTab] = useState('sale');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Verificar si hay tokens guardados al iniciar la app para mantener la sesión
+  useEffect(() => {
+    const token = localStorage.getItem('access_token');
+    const refresh = localStorage.getItem('refresh_token');
+    if (token && refresh) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  // Escuchar eventos de logout forzado (ej. cuando expira el refresh token en Axios)
+  useEffect(() => {
+    const handleForcedLogout = () => {
+      handleLogout();
+    };
+
+    window.addEventListener('auth_logout', handleForcedLogout);
+    return () => {
+      window.removeEventListener('auth_logout', handleForcedLogout);
+    };
+  }, []);
+
   const handleLogin = () => {
     setIsLoggedIn(true);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    setIsLoggedIn(false);
   };
 
   return (
@@ -31,6 +58,7 @@ const App = () => {
                 setActiveTab={setActiveTab}
                 includeSuppliers={true}
                 includeClients={true}
+                onLogout={handleLogout}
               />
             </div>
 

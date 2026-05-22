@@ -1,18 +1,36 @@
 import React, { useState } from 'react';
 import { Lock, User, ShieldCheck } from 'lucide-react';
+import apiClient from '../api/client';
 
 const LoginScreen = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (username === 'admin' && password === '1234') {
-      setError('');
+    setError('');
+    setIsLoading(true);
+    
+    try {
+      const response = await apiClient.post('/token/', {
+        username: username,
+        password: password
+      });
+      
+      const { access, refresh } = response.data;
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
       onLogin();
-    } else {
-      setError('Credenciales incorrectas. Intente nuevamente.');
+    } catch (err) {
+      if (err.response && (err.response.status === 400 || err.response.status === 401)) {
+        setError('Credenciales incorrectas. Verifique usuario y contraseña.');
+      } else {
+        setError('Error al conectar con el servidor. Intente nuevamente.');
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -77,9 +95,14 @@ const LoginScreen = ({ onLogin }) => {
 
             <button
               type="submit"
-              className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg tracking-widest uppercase hover:bg-emerald-600 hover:shadow-xl hover:shadow-emerald-200 transition-all active:scale-[0.98]"
+              disabled={isLoading}
+              className={`w-full py-5 rounded-2xl font-black text-lg tracking-widest uppercase transition-all active:scale-[0.98] ${
+                isLoading 
+                  ? "bg-slate-400 text-slate-100 cursor-not-allowed" 
+                  : "bg-slate-900 text-white hover:bg-emerald-600 hover:shadow-xl hover:shadow-emerald-200"
+              }`}
             >
-              ACCEDER AL PANEL
+              {isLoading ? 'ACCEDIENDO...' : 'ACCEDER AL PANEL'}
             </button>
           </form>
         </div>

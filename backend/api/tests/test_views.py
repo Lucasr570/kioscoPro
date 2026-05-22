@@ -1,10 +1,13 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from django.contrib.auth.models import User
 from api.models import Product, Supplier, Client
 
 class ViewTests(APITestCase):
     def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.client.force_authenticate(user=self.user)
         self.supplier = Supplier.objects.create(name="Proveedor")
         self.product = Product.objects.create(
             name="Alfajor", barcode="779", cost=50, price=100, stock=20, supplier=self.supplier

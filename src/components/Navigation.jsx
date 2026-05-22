@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Menu, X, ShoppingCart, Package, History, Users, Truck, Store, BarChart3, TrendingDown } from "lucide-react";
+import { Menu, X, ShoppingCart, Package, History, Users, Truck, Store, BarChart3, TrendingDown, LogOut } from "lucide-react";
 
-const Navigation = ({ activeTab, setActiveTab, includeSuppliers, includeClients }) => {
+const Navigation = ({ activeTab, setActiveTab, includeSuppliers, includeClients, onLogout }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -50,6 +50,15 @@ const Navigation = ({ activeTab, setActiveTab, includeSuppliers, includeClients 
             <span>{item.label}</span>
           </button>
         ))}
+        
+        {/* Botón de Cerrar Sesión */}
+        <button
+          onClick={onLogout}
+          className="flex items-center space-x-2 py-1.5 px-3.5 text-sm font-bold rounded-lg transition-all duration-200 w-full md:w-auto text-rose-600 hover:bg-rose-50 hover:text-rose-700"
+        >
+          <LogOut size={16} />
+          <span>Cerrar sesión</span>
+        </button>
       </div>
     </nav>
   );
