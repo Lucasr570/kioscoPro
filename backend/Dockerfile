@@ -27,4 +27,4 @@ COPY . .
 EXPOSE 8000
 
 # Comando para iniciar la aplicación corriendo primero las migraciones
-CMD ["sh", "-c", "python manage.py migrate && gunicorn --bind 0.0.0.0:8000 core.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput --username lucas --email luksr570@gmail.com || true && gunicorn core.wsgi:application"]
