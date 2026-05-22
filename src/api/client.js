@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+const baseURL = process.env.REACT_APP_API_URL 
+  ? (process.env.REACT_APP_API_URL.endsWith('/') ? `${process.env.REACT_APP_API_URL}api/` : `${process.env.REACT_APP_API_URL}/api/`) 
+  : 'http://localhost:8000/api/';
+
 const apiClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api/',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -42,7 +46,9 @@ apiClient.interceptors.response.use(
       if (refreshToken) {
         try {
           // Usamos una instancia limpia de axios para no disparar este interceptor
-          const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/';
+          const baseUrl = process.env.REACT_APP_API_URL 
+            ? (process.env.REACT_APP_API_URL.endsWith('/') ? `${process.env.REACT_APP_API_URL}api/` : `${process.env.REACT_APP_API_URL}/api/`) 
+            : 'http://localhost:8000/api/';
           const response = await axios.post(`${baseUrl}token/refresh/`, {
             refresh: refreshToken
           });

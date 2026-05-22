@@ -1,20 +1,39 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from .models import Supplier, Client, Product, Sale, SaleItem, Expense
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'password', 'email')
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email', ''),
+            password=validated_data['password']
+        )
+        return user
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Expense
         fields = '__all__'
+        read_only_fields = ('user',)
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
         fields = '__all__'
+        read_only_fields = ('user',)
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = '__all__'
+        read_only_fields = ('user',)
 
 class ProductSerializer(serializers.ModelSerializer):
     supplier_name = serializers.CharField(source='supplier.name', read_only=True)
@@ -22,6 +41,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+        read_only_fields = ('user',)
 
 class SaleItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source='product.name', read_only=True)
@@ -37,6 +57,7 @@ class SaleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sale
         fields = ['id', 'date', 'total', 'paymentMethod', 'client', 'items']
+        read_only_fields = ('user',)
 
     def validate(self, data):
         payment_method = data.get('paymentMethod')
