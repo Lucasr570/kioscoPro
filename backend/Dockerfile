@@ -27,4 +27,4 @@ COPY . .
 EXPOSE 8000
 
 # Comando para iniciar la aplicación corriendo primero las migraciones
-CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput --username lucas --email luksr570@gmail.com || true && gunicorn core.wsgi:application"]
+CMD ["sh", "-c", "python manage.py migrate && python -c \"import django; django.setup(); from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username='lucas').delete(); User.objects.create_superuser('lucas', 'lucasr57@gmail.com', 'Contrakiosco!')\" && gunicorn core.wsgi:application"]
