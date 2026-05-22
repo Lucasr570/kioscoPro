@@ -18,7 +18,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Instalar Gunicorn para servir la aplicación en producción
-RUN pip install gunicorn
+RUN pip install gunicorn psycopg2-binary
 
 # Copiar el código del proyecto
 COPY . .
