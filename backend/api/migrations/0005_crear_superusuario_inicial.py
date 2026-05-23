@@ -21,9 +21,7 @@ def eliminar_usuario_inicial(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        # Esto le dice a Django que corra después de tu primera migración.
-        # Asegúrate de que el nombre del archivo coincida con tu migración 0001.
-        ('api', '0001_initial'), 
+        ('api', '0004_remove_supplier_organizacion_and_more'), 
     ]
 
     operations = [
