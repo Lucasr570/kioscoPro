@@ -27,4 +27,4 @@ COPY . .
 EXPOSE 8000
 
 # Comando para iniciar la aplicación corriendo primero las migraciones
-CMD ["sh", "-c", "python manage.py migrate && python -c 'import django; django.setup(); from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.filter(username=\"lucas\").delete(); User.objects.create_superuser(\"lucas\", \"lucasr57@gmail.com\", \"Contrakiosco!\")' && gunicorn core.wsgi:application --bind 0.0.0.0:10000"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:10000"]
