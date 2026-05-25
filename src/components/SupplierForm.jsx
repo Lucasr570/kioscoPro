@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Save, X, Truck, MapPin, Phone, Mail } from 'lucide-react';
 
 const SupplierForm = ({ onSave, initialData, onCancel }) => {
+  const isMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const [supplier, setSupplier] = useState({
     name: '',
     address: '',
@@ -37,7 +44,7 @@ const SupplierForm = ({ onSave, initialData, onCancel }) => {
         ...initialData,
         ...supplier
       });
-      if (!initialData) {
+      if (isMounted.current && !initialData) {
         setSupplier({
           name: '',
           address: '',
@@ -46,9 +53,13 @@ const SupplierForm = ({ onSave, initialData, onCancel }) => {
         });
       }
     } catch (error) {
-      alert("Error al guardar proveedor: " + error.message);
+      if (isMounted.current) {
+        alert("Error al guardar proveedor: " + error.message);
+      }
     } finally {
-      setIsSaving(false);
+      if (isMounted.current) {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -148,7 +159,7 @@ const SupplierForm = ({ onSave, initialData, onCancel }) => {
           ) : (
             <Save size={20} />
           )}
-          {initialData ? 'Actualizar Proveedor' : 'Guardar Proveedor'}
+          <span>{initialData ? 'Actualizar Proveedor' : 'Guardar Proveedor'}</span>
         </button>
       </div>
     </form>

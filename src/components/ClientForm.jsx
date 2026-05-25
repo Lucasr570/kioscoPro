@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Save, X, User, MapPin, Phone } from 'lucide-react';
 
 const ClientForm = ({ onSave, initialData, onCancel }) => {
+  const isMounted = useRef(true);
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const [client, setClient] = useState({
     name: '',
     address: '',
@@ -35,13 +42,17 @@ const ClientForm = ({ onSave, initialData, onCancel }) => {
         ...initialData,
         ...client
       });
-      if (!initialData) {
+      if (isMounted.current && !initialData) {
         setClient({ name: '', address: '', phone: '' });
       }
     } catch (error) {
-      alert("Error al guardar cliente: " + error.message);
+      if (isMounted.current) {
+        alert("Error al guardar cliente: " + error.message);
+      }
     } finally {
-      setIsSaving(false);
+      if (isMounted.current) {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -123,7 +134,7 @@ const ClientForm = ({ onSave, initialData, onCancel }) => {
           ) : (
             <Save size={20} />
           )}
-          {initialData ? 'Actualizar Cliente' : 'Guardar Cliente'}
+          <span>{initialData ? 'Actualizar Cliente' : 'Guardar Cliente'}</span>
         </button>
       </div>
     </form>
