@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, User, ShieldCheck } from 'lucide-react';
+import { Lock, User, ShieldCheck, Eye, EyeOff } from 'lucide-react';
 import apiClient from '../api/client';
 
 const LoginScreen = ({ onLogin }) => {
@@ -10,6 +10,7 @@ const LoginScreen = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -114,13 +115,21 @@ const LoginScreen = ({ onLogin }) => {
                 </div>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   placeholder="••••"
-                  className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-emerald-500 outline-none transition-all font-bold text-slate-700"
+                  className="w-full pl-12 pr-12 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-emerald-500 outline-none transition-all font-bold text-slate-700"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-4 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
+                  title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
