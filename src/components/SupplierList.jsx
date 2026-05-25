@@ -70,7 +70,7 @@ const SupplierList = () => {
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2">
               <Truck className="text-emerald-600" size={24} />
-              Gestión de Proveedores
+              <span>Gestión de Proveedores</span>
             </h2>
             <p className="text-slate-500 text-xs md:text-sm">Directorio de contacto y logística</p>
           </div>
@@ -123,55 +123,62 @@ const SupplierList = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filteredSuppliers.map(supplier => (
-                <tr key={supplier.id} className="hover:bg-slate-50/50 transition-colors group">
-                  <td className="px-4 py-2.5">
-                    <div className="font-bold text-slate-800 text-sm md:text-base">{supplier.name}</div>
-                    <div className="flex items-center text-[10px] text-slate-400 font-medium mt-0.5 md:hidden">
-                      <Phone size={10} className="mr-1" /> {supplier.phone || 'S/T'}
-                    </div>
-                    <div className="flex items-center text-[10px] text-slate-400 font-medium mt-0.5">
-                      <Mail size={10} className="mr-1" /> {supplier.email || 'Sin email'}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2.5">
-                    <div className="flex items-center text-sm text-slate-600 font-medium">
-                      <Phone size={12} className="mr-2 text-slate-400 hidden md:inline" /> {supplier.phone || 'N/A'}
-                    </div>
-                  </td>
-                  <td className="hidden lg:table-cell px-4 py-2.5">
-                    <div className="flex items-center text-sm text-slate-600 font-medium">
-                      <MapPin size={12} className="mr-2 text-slate-400" /> {supplier.address || 'N/A'}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2.5 text-right">
-                    <div className="flex justify-end space-x-1">
-                      <button 
-                        onClick={() => setEditingSupplier(supplier)}
-                        className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                        title="Editar"
-                      >
-                        <Edit3 size={18} />
-                      </button>
-                      <button 
-                        onClick={() => handleDelete(supplier.id)} 
-                        className="p-2 text-rose-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                        title="Eliminar"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
+              {filteredSuppliers.length === 0 ? (
+                <tr>
+                  <td colSpan="4" className="p-10 text-center text-slate-400 font-medium">
+                    No hay proveedores registrados.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredSuppliers.map(supplier => (
+                  <tr key={supplier.id} className="hover:bg-slate-50/50 transition-colors group">
+                    <td className="px-4 py-2.5">
+                      <div className="font-bold text-slate-800 text-sm md:text-base">{supplier.name}</div>
+                      <div className="flex items-center text-[10px] text-slate-400 font-medium mt-0.5 md:hidden">
+                        <Phone size={10} className="mr-1" />
+                        <span>{supplier.phone || 'S/T'}</span>
+                      </div>
+                      <div className="flex items-center text-[10px] text-slate-400 font-medium mt-0.5">
+                        <Mail size={10} className="mr-1" />
+                        <span>{supplier.email || 'Sin email'}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2.5">
+                      <div className="flex items-center text-sm text-slate-600 font-medium">
+                        <Phone size={12} className="mr-2 text-slate-400 hidden md:inline" />
+                        <span>{supplier.phone || 'N/A'}</span>
+                      </div>
+                    </td>
+                    <td className="hidden lg:table-cell px-4 py-2.5">
+                      <div className="flex items-center text-sm text-slate-600 font-medium">
+                        <MapPin size={12} className="mr-2 text-slate-400" />
+                        <span>{supplier.address || 'N/A'}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2.5 text-right">
+                      <div className="flex justify-end space-x-1">
+                        <button 
+                          onClick={() => setEditingSupplier(supplier)}
+                          className="p-2 text-blue-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
+                          title="Editar"
+                        >
+                          <Edit3 size={18} />
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(supplier.id)} 
+                          className="p-2 text-rose-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                          title="Eliminar"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
-        {filteredSuppliers.length === 0 && (
-          <div className="p-10 text-center text-slate-400 font-medium">
-            No hay proveedores registrados.
-          </div>
-        )}
       </div>
     </div>
   );
