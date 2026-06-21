@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, User, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, ShieldCheck, Eye, EyeOff, CheckCircle } from 'lucide-react';
 import apiClient from '../api/client';
 
 const LoginScreen = ({ onLogin }) => {
@@ -52,10 +52,17 @@ const LoginScreen = ({ onLogin }) => {
         email: email
       });
       
-      setSuccess('Usuario creado exitosamente. Ahora puedes iniciar sesión.');
+      setSuccess('Usuario creado con éxito.');
+      // Ocultar mensaje de éxito después de 4 segundos
+      setTimeout(() => {
+        setSuccess('');
+      }, 4000);
+      
       setIsRegistering(false);
       // Opcional: limpiar contraseña para forzar que la escriban de nuevo
       setPassword('');
+      setUsername('');
+      setEmail('');
     } catch (err) {
       if (err.response && err.response.data) {
         // Mostrar el primer mensaje de error que envíe la API
@@ -135,7 +142,7 @@ const LoginScreen = ({ onLogin }) => {
 
             {isRegistering && (
               <div className="space-y-2">
-                <label htmlFor="email" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email (Opcional)</label>
+                <label htmlFor="email" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Email</label>
                 <div className="relative group">
                   <div className="absolute inset-y-0 left-4 flex items-center text-slate-300 group-focus-within:text-emerald-500 transition-colors">
                     <User size={20} />
@@ -147,6 +154,7 @@ const LoginScreen = ({ onLogin }) => {
                     className="w-full pl-12 pr-4 py-4 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:bg-white focus:border-emerald-500 outline-none transition-all font-bold text-slate-700"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -161,7 +169,7 @@ const LoginScreen = ({ onLogin }) => {
 
             {success && (
               <div className="bg-emerald-50 text-emerald-600 p-4 rounded-xl text-sm font-bold flex items-center gap-2">
-                <ShieldCheck size={18} className="shrink-0" />
+                <CheckCircle size={18} className="shrink-0" />
                 {success}
               </div>
             )}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Menu, X, ShoppingCart, Package, History, Users, Truck, Store, BarChart3, TrendingDown, LogOut } from "lucide-react";
+import { Menu, X, ShoppingCart, Package, History, Users, Truck, Store, BarChart3, TrendingDown, LogOut, ShieldCheck } from "lucide-react";
 
-const Navigation = ({ activeTab, setActiveTab, includeSuppliers, includeClients, onLogout }) => {
+const Navigation = ({ activeTab, setActiveTab, includeSuppliers, includeClients, onLogout, isStaff }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const navItems = [
@@ -12,6 +12,7 @@ const Navigation = ({ activeTab, setActiveTab, includeSuppliers, includeClients,
     { key: "expenses", label: "Egresos", icon: <TrendingDown size={16} /> },
     includeSuppliers && { key: "suppliers", label: "Proveedores", icon: <Truck size={16} /> },
     includeClients && { key: "clients", label: "Clientes", icon: <Users size={16} /> },
+    isStaff && { key: "admin", label: "Panel Admin", icon: <ShieldCheck size={16} /> },
   ].filter(Boolean);
 
   return (

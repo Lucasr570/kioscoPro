@@ -1,9 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Supplier, Client, Product, Sale, SaleItem, Expense
+from .models import Supplier, Client, Product, Sale, SaleItem, Expense, Subscription
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from django.utils import timezone
+from datetime import timedelta
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
@@ -15,7 +19,33 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             email=validated_data.get('email', ''),
             password=validated_data['password']
         )
+        # Crear suscripción de prueba de 15 días por defecto
+        Subscription.objects.create(
+            user=user,
+            is_active=True,
+            expires_at=timezone.now() + timedelta(days=15)
+        )
         return user
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims
+        token['is_staff'] = user.is_staff
+        return token
+
+class SubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscription
+        fields = ['is_active', 'expires_at']
+
+class AdminUserSerializer(serializers.ModelSerializer):
+    subscription = SubscriptionSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'date_joined', 'is_active', 'is_staff', 'subscription']
 
 class ExpenseSerializer(serializers.ModelSerializer):
     class Meta:

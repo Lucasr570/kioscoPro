@@ -9,10 +9,13 @@ import ExpenseList from './components/ExpenseList';
 import SupplierList from './components/SupplierList';
 import ClientList  from './components/ClientList';
 import LoginScreen from './components/LoginScreen';
+import AdminPanel from './components/AdminPanel';
+import { parseJwt } from './utils/jwt';
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('sale');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
 
   // Verificar si hay tokens guardados al iniciar la app para mantener la sesión
   useEffect(() => {
@@ -20,6 +23,10 @@ const App = () => {
     const refresh = localStorage.getItem('refresh_token');
     if (token && refresh) {
       setIsLoggedIn(true);
+      const decoded = parseJwt(token);
+      if (decoded && decoded.is_staff) {
+        setIsStaff(true);
+      }
     }
   }, []);
 
@@ -37,12 +44,23 @@ const App = () => {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      const decoded = parseJwt(token);
+      if (decoded && decoded.is_staff) {
+        setIsStaff(true);
+      } else {
+        setIsStaff(false);
+      }
+    }
   };
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     setIsLoggedIn(false);
+    setIsStaff(false);
+    setActiveTab('sale');
   };
 
   return (
@@ -59,6 +77,7 @@ const App = () => {
                 includeSuppliers={true}
                 includeClients={true}
                 onLogout={handleLogout}
+                isStaff={isStaff}
               />
             </div>
 
@@ -75,6 +94,7 @@ const App = () => {
                 {activeTab === 'expenses' && <ExpenseList />}
                 {activeTab === 'suppliers' && <SupplierList />}
                 {activeTab === 'clients' && <ClientList />}
+                {activeTab === 'admin' && isStaff && <AdminPanel />}
               </div>
             </main>
           </>

@@ -1,4 +1,5 @@
 from django.db import migrations
+from django.utils import timezone  # <--- IMPORTAMOS ESTO
 
 def crear_usuario_inicial(apps, schema_editor):
     # Obtenemos el modelo de usuario actual del proyecto
@@ -10,7 +11,8 @@ def crear_usuario_inicial(apps, schema_editor):
         User.objects.create_superuser(
             username='lucas',
             email='lucasr57@gmail.com',
-            password='Contrakiosco!'
+            password='Contrakiosco!',
+            last_login=timezone.now()  # <--- AGREGAMOS ESTA LÍNEA
         )
 
 def eliminar_usuario_inicial(apps, schema_editor):

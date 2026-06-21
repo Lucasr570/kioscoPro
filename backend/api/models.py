@@ -1,5 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+
+class Subscription(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription')
+    is_active = models.BooleanField(default=True)
+    expires_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Suscripción de {self.user.username}"
 
 class Supplier(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
